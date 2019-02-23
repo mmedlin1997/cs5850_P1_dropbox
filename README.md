@@ -1,2 +1,2 @@
-# my-dropbox
-# cs5850_P1_Dropbox
+# cs5850 Project 1 Dropbox
+
