@@ -18,16 +18,23 @@ import com.amazonaws.services.s3.model.S3ObjectSummary;
 
 public class AwsS3Client
 {
+   private final AmazonS3 s3client;
+   private final String bucketName;
    
-   public static void putFileToBucket(String file_path, String bucket_name) {
-      System.out.format("Uploading %s to S3 bucket %s...\n", file_path, bucket_name);
-      final AmazonS3 s3 = AmazonS3ClientBuilder.defaultClient();
+   public AwsS3Client(AmazonS3 s3client, String bucketName) {
+      this.s3client = s3client;
+      this.bucketName = bucketName;
+   }
+   
+   public void putFileToBucket(String file_path) {
+      //System.out.format("Uploading %s to S3 bucket %s...\n", file_path, bucket_name);
+      //this.s3client = AmazonS3ClientBuilder.defaultClient();
       try {
          String key_name = Paths.get(file_path).getFileName().toString();
-         s3.putObject(bucket_name, key_name, new File(file_path));
+         this.s3client.putObject(this.bucketName, key_name, new File(file_path));
       } catch (AmazonS3Exception e) {
-         System.err.println(e.getErrorMessage());
-         System.exit(1);
+         e.getErrorMessage();
+//         System.exit(1);
       }
    }
    

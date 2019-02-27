@@ -10,8 +10,9 @@ import java.nio.file.WatchEvent.Kind;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
 
-public class FolderWatcher
+public class FolderWatcher implements Runnable
 {
+   
    public static void watchForEvent(String folder) {
       WatchService watcherService = null;
       try
@@ -68,5 +69,20 @@ public class FolderWatcher
          // TODO Auto-generated catch block
          e.printStackTrace();
       }  
+   }
+   
+   @Override
+   public void run()
+   {
+      System.out.println("Inside : " + Thread.currentThread().getName());
+      
+      while(!Thread.interrupted()) {
+         try {
+            Thread.sleep(1000);
+         } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+         }
+      }
+      
    }
 }
