@@ -32,13 +32,14 @@ mvn clean package
    Locate: 
    
    ```
-   target/CS5850_P1_Dropbox-0.0.1-SNAPSHOT.jar.jar
+   target/CS5850_P1_Dropbox-0.0.1-SNAPSHOT.jar
    ```
    
 2 Run
    
    ```
-   java -cp target/CS5850_P1_Dropbox-0.0.1-SNAPSHOT.jar  cs5850.CS5850_P1_Dropbox.App```
+   java -cp target/CS5850_P1_Dropbox-0.0.1-SNAPSHOT.jar  cs5850.CS5850_P1_Dropbox.App
+   ```
 
 ## Site reporting
 This project uses the following Maven plugins for code validation and QA:
