@@ -20,7 +20,7 @@ public class AwsS3ClientTest
       
       AwsS3Client client = new AwsS3Client(s3testClient, BUCKET_NAME);
       client.putFileToBucket(BUCKET_TEST_FILE);
-      fail("Not yet implemented");
+//      fail("Not yet implemented");
    }
 
 }
