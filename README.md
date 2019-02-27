@@ -23,19 +23,15 @@ or
 
 ## Run
 
-1 Build
-   
-```
-mvn clean package
-```
-   
-   Locate: 
+1 Build the application.
    
    ```
-   target/CS5850_P1_Dropbox-0.0.1-SNAPSHOT.jar
+   mvn clean package
    ```
    
-2 Run
+   Locate the resulting *.jar file: `target/CS5850_P1_Dropbox-0.0.1-SNAPSHOT.jar`
+   
+2 Run from the command line.
    
    ```
    java -cp target/CS5850_P1_Dropbox-0.0.1-SNAPSHOT.jar  cs5850.CS5850_P1_Dropbox.App
