@@ -2,9 +2,7 @@ package cs5850.CS5850_P1_Dropbox;
 
 import static org.junit.Assert.*;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.File;
 
 import org.junit.Test;
 
@@ -15,59 +13,43 @@ public class AwsS3ClientTest
 {
 
    @Test
-   public void testAwsS3Client_should_getListFromBucket()
-   {
-      AmazonS3 s3testClient = AmazonS3ClientBuilder.defaultClient();
-      s3testClient.getRegion();
-      final String BUCKET_NAME = "mmedlin-dropbox";
-      final String BUCKET_TEST_FILE = 
-            "C:\\Users\\vanessa\\Desktop\\Java\\example\\s3_test.txt";
+   public void testAwsS3Client_should_getListFromBucket() {
+      final String BUCKET_NAME = "mmedlin-test";
+//    final String BUCKET_NAME = "mmedlin-dropbox-uswest1";
+      final String DROPBOX_PATH = "C:\\Users\\vanessa\\Desktop\\Java\\Dropbox\\";
+      final String FILE1 = "test1.txt";
+      final String FILE2 = "test1_copy.txt";
+      final String FILE3 = "test3.txt";
+      final String FILE4 = "test3_modify.txt";
       
-//      AwsS3Client client = new AwsS3Client(s3testClient, BUCKET_NAME);
-//      client.putFileToBucket(BUCKET_TEST_FILE);
-//      fail("Not yet implemented");
+      // Setup using credentials at ~/user/.aws
+      AmazonS3 s3Client = AmazonS3ClientBuilder.defaultClient();
+      IAwsS3Client s3 = new AwsS3Client(s3Client, BUCKET_NAME);
+      
+      System.out.println("Bucket list:");
+      s3.getListFromBucket();
+      
+      // Put files to S3
+      System.out.println("After adding file:");
+      s3.putFile(new File(DROPBOX_PATH + FILE1));
+      s3.getListFromBucket();
+      
+      System.out.println("After copying file:");
+      s3.copyFile(FILE1, FILE2);
+      s3.getListFromBucket();
+      
+      System.out.println("After deleting file:");
+      s3.deleteFile(FILE1);
+      s3.getListFromBucket();
+      
+      System.out.println("After renaming file:");
+      s3.putFile(new File(DROPBOX_PATH + FILE3));
+      s3.renameFile(FILE3, FILE4);
+      s3.getListFromBucket();
    }
    
    @Test
    public void testAwsS3Client_should_createBucket() {
-      final String S3_BUCKET_NAME = "mmedlin-test";
-      final String LOCAL_PATH1 = "C:\\Users\\Vanessa\\Desktop\\Java\\example\\test1.txt";
-      final String LOCAL_PATH2 = "C:\\Users\\Vanessa\\Desktop\\Java\\mmedlin-test\\";
-      final String LOCAL_PATH3 = "C:\\Users\\Vanessa\\Desktop\\Java\\mmedlin-test\\test1.txt";
-      
-      Path path = Paths.get(LOCAL_PATH1);
-      System.out.println(path.getFileName());
-      System.out.println(path.getParent().getFileName());
-      if (Files.notExists(path)) {
-         System.out.println("Does NOT exist");
-      }
-      else {
-         System.out.println("Does exist");
-      }
-      
-      path = Paths.get(LOCAL_PATH2);
-      System.out.println(path.getFileName());
-      System.out.println(path.getParent().getFileName());
-      if (Files.notExists(path)) {
-         System.out.println("Does NOT exist");
-      }
-      else {
-         System.out.println("Does exist");
-      }
-      
-       path = Paths.get(LOCAL_PATH3);
-      System.out.println(path.getFileName());
-      System.out.println(path.getParent().getFileName());
-      if (Files.notExists(path)) {
-         System.out.println("Does NOT exist");
-      }
-      else {
-         System.out.println("Does exist");
-      }
-      
-
-//      AmazonS3 s3testClient = AmazonS3ClientBuilder.defaultClient();
-      
       
    }
 

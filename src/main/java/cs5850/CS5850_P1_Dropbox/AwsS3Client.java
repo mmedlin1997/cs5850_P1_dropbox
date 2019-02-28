@@ -8,19 +8,15 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import com.amazonaws.AmazonServiceException;
-import com.amazonaws.SdkClientException;
-import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.AmazonS3Exception;
-import com.amazonaws.services.s3.model.CreateBucketRequest;
-import com.amazonaws.services.s3.model.GetBucketLocationRequest;
 import com.amazonaws.services.s3.model.ListObjectsV2Result;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 
-public class AwsS3Client
+public class AwsS3Client implements IAwsS3Client
 {
    private final AmazonS3 s3client;
    private final String bucketName;
@@ -30,22 +26,76 @@ public class AwsS3Client
       this.bucketName = bucketName;
    }
    
-   public void putFileToBucket(String file_path) {
+   /* (non-Javadoc)
+    * @see cs5850.CS5850_P1_Dropbox.IAwsS3Client#putFile(java.io.File)
+    */
+   @Override
+   public void putFile(File file) {
       try {
-         String key_name = Paths.get(file_path).getFileName().toString();
-         this.s3client.putObject(this.bucketName, key_name, new File(file_path));
+         String fileName = file.getName().toString();
+         this.s3client.putObject(this.bucketName, fileName, file);
       } catch (AmazonS3Exception e) {
          e.getErrorMessage();
       }
    }
    
-   public static void getListFromBucket(String bucket_name) {
-      System.out.format("List from S3 bucket %s contents...\n", bucket_name);
-      final AmazonS3 s3 = AmazonS3ClientBuilder.defaultClient();
-      ListObjectsV2Result result = s3.listObjectsV2(bucket_name);
+   /* (non-Javadoc)
+    * @see cs5850.CS5850_P1_Dropbox.IAwsS3Client#copyFile(java.lang.String, java.lang.String)
+    */
+   @Override
+   public void copyFile(String origFileName, String newFileName) {
+      try {
+         this.s3client.copyObject(this.bucketName, origFileName, 
+               this.bucketName, newFileName);
+      } catch (AmazonServiceException e) {
+         e.getErrorMessage();
+      }
+   }
+   
+   /* (non-Javadoc)
+    * @see cs5850.CS5850_P1_Dropbox.IAwsS3Client#deleteFile(java.lang.String)
+    */
+   @Override
+   public void deleteFile(String fileName) {
+      try {
+         this.s3client.deleteObject(this.bucketName, fileName);
+      } catch (AmazonServiceException e) {
+          e.getErrorMessage();
+      }
+   }
+   
+   /* (non-Javadoc)
+    * @see cs5850.CS5850_P1_Dropbox.IAwsS3Client#renameFile(java.lang.String, java.lang.String)
+    */
+   @Override
+   public void renameFile(String origFileName, String newFileName) {
+      this.copyFile(origFileName, newFileName);
+      this.deleteFile(origFileName);
+   }
+   
+   /* (non-Javadoc)
+    * @see cs5850.CS5850_P1_Dropbox.IAwsS3Client#getListFromBucket()
+    */
+   @Override
+   public String[] getListFromBucket() {
+      ListObjectsV2Result result = this.s3client.listObjectsV2(this.bucketName);
       List<S3ObjectSummary> objects = result.getObjectSummaries();
-      for (S3ObjectSummary os: objects) {
-          System.out.println("* " + os.getKey());
+      
+      String[] keys = new String[objects.size()];
+      for (int i=0; i<objects.size(); i++) {
+         keys[i] = objects.get(i).getKey(); 
+      }
+      return keys;
+   }
+   
+   /* (non-Javadoc)
+    * @see cs5850.CS5850_P1_Dropbox.IAwsS3Client#printList()
+    */
+   @Override
+   public void printList() {
+      String[] keys = this.getListFromBucket();
+      for(String s : keys){
+         System.out.println(s);
       }
    }
    
@@ -76,24 +126,5 @@ public class AwsS3Client
          System.exit(1);
       }
    }
-   public static void copyObject(String bucket_name, String orig_object, String new_object) {
-      final AmazonS3 s3 = AmazonS3ClientBuilder.defaultClient();
-      try {
-         s3.copyObject(bucket_name, orig_object, bucket_name, new_object);
-      } catch (AmazonServiceException e) {
-         System.err.println(e.getErrorMessage());
-         System.exit(1);
-      }
-   }
    
-   public static void deleteObject(String bucket_name, String object_key) {
-      final AmazonS3 s3 = AmazonS3ClientBuilder.defaultClient();
-      try {
-          s3.deleteObject(bucket_name, object_key);
-      } catch (AmazonServiceException e) {
-          System.err.println(e.getErrorMessage());
-          System.exit(1);
-      }
-   }
-
 }

@@ -30,7 +30,6 @@ public class FolderWatcher implements Runnable
    
    @Override
    public void run() {
-      System.out.println("Inside : " + Thread.currentThread().getName());
       // Create a watch key and take the next one
       WatchKey watchKey;
       
