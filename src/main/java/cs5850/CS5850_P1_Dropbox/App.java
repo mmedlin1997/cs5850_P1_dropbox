@@ -13,6 +13,7 @@ public class App
     public static void main( String[] args )
     {
        final String WATCHED_FOLDER_NAME = "Dropbox";
+       final String S3_BUCKET_NAME = "mmedlin-dropbox-uswest1";
        final String DROPBOX_PATH = "C:\\Users\\vanessa\\Desktop\\Java\\Dropbox";
        
        FolderUtility util = new FolderUtility(WATCHED_FOLDER_NAME);
@@ -24,11 +25,16 @@ public class App
           System.exit(0);
        }
        
+       // Setup using credentials at ~/user/.aws
+       AmazonS3 s3Client = AmazonS3ClientBuilder.defaultClient();
+       IAwsS3Client s3 = new AwsS3Client(s3Client, S3_BUCKET_NAME);
+       
        // Start watching folder on separate thread
-       Thread fwt = new Thread(new FolderWatcher(util.getPath()));
+       Thread fwt = new Thread(new FolderWatcher(util.getPath(), s3));
        fwt.start();
        System.out.println("Watching for changes in: " + util.getPath().toString());
-        
+       System.out.println("Syncing with AWS S3 bucket: " + S3_BUCKET_NAME + "\n");
+       
        System.out.println("Press enter to stop watching folder and exit.");
        Scanner in = new Scanner(System.in);
        if(in.nextLine().isEmpty()) {
@@ -80,7 +86,11 @@ public class App
        final String DROPBOX_PATH = "C:\\Users\\vanessa\\Desktop\\Java\\Dropbox";
        Path path = Paths.get(DROPBOX_PATH);
        
-       Thread fwt = new Thread(new FolderWatcher(path));
+       // Setup using credentials at ~/user/.aws
+       AmazonS3 s3Client = AmazonS3ClientBuilder.defaultClient();
+       IAwsS3Client s3 = new AwsS3Client(s3Client, "mmedlin-test");
+       
+       Thread fwt = new Thread(new FolderWatcher(path, s3));
        fwt.start();
        
        Scanner in = new Scanner(System.in);
