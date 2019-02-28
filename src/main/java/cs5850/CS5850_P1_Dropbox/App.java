@@ -1,25 +1,38 @@
 package cs5850.CS5850_P1_Dropbox;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Scanner;
 
 public class App 
 {
     public static void main( String[] args )
     {
-//       final String SAMPLE_FOLDER = "C:\\Users\\vanessa\\Desktop\\Java\\example";
-//       FolderWatcher.watchForEvent(SAMPLE_FOLDER);
-     
-       Thread fw = new Thread(new FolderWatcher());
-       System.out.println("Starting folder watcher.");
-       fw.start();
+       final String DROPBOX_PATH = "C:\\Users\\vanessa\\Desktop\\Java\\Dropbox";
+       Path path = Paths.get(DROPBOX_PATH);
+       
+       Thread fwt = new Thread(new FolderWatcher(path));
+       fwt.start();
        
        Scanner in = new Scanner(System.in);
        if(in.nextLine().isEmpty()) {
-          fw.interrupt();
+          fwt.interrupt();
        } else {
-          fw.interrupt();
+          fwt.interrupt();
        }
        in.close();
+       
+//       Thread fw = new Thread(new FolderWatcher());
+//       System.out.println("Starting folder watcher.");
+//       fw.start();
+//       
+//       Scanner in = new Scanner(System.in);
+//       if(in.nextLine().isEmpty()) {
+//          fw.interrupt();
+//       } else {
+//          fw.interrupt();
+//       }
+//       in.close();
        
        //final String BUCKET_NAME = "mmedlin-dropbox";
        
