@@ -30,7 +30,7 @@ Perform validation tests.
    
    ```
    cd target
-   java -cp CS5850_P1_Dropbox-0.0.1-SNAPSHOT.jar  cs5850.CS5850_P1_Dropbox.App
+   java -cp CS5850_P1_Dropbox-0.0.1-SNAPSHOT.jar cs5850.CS5850_P1_Dropbox.App
    ```
 
 ## Usage
@@ -51,7 +51,7 @@ This project uses the following Maven plugins for code validation and QA:
 * [Findbugs](https://mvnrepository.com/artifact/org.codehaus.mojo/findbugs-maven-plugin/3.0.5)
 for bug checking
 
-To generate report, execute:
+To generate reports, execute:
 
 ```
 mvn site

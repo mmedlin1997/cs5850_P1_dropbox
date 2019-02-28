@@ -8,9 +8,13 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import com.amazonaws.AmazonServiceException;
+import com.amazonaws.SdkClientException;
+import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.AmazonS3Exception;
+import com.amazonaws.services.s3.model.CreateBucketRequest;
+import com.amazonaws.services.s3.model.GetBucketLocationRequest;
 import com.amazonaws.services.s3.model.ListObjectsV2Result;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
@@ -27,14 +31,11 @@ public class AwsS3Client
    }
    
    public void putFileToBucket(String file_path) {
-      //System.out.format("Uploading %s to S3 bucket %s...\n", file_path, bucket_name);
-      //this.s3client = AmazonS3ClientBuilder.defaultClient();
       try {
          String key_name = Paths.get(file_path).getFileName().toString();
          this.s3client.putObject(this.bucketName, key_name, new File(file_path));
       } catch (AmazonS3Exception e) {
          e.getErrorMessage();
-//         System.exit(1);
       }
    }
    
@@ -94,4 +95,5 @@ public class AwsS3Client
           System.exit(1);
       }
    }
+
 }
