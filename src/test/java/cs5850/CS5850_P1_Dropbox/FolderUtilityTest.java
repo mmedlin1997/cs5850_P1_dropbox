@@ -2,6 +2,8 @@ package cs5850.CS5850_P1_Dropbox;
 
 import static org.junit.Assert.*;
 
+import java.nio.file.Paths;
+
 import org.junit.Test;
 
 public class FolderUtilityTest
@@ -14,7 +16,6 @@ public class FolderUtilityTest
            "C:\\Users\\Vanessa\\Desktop\\Java\\Dropbox\\",
            "C:\\Users\\Vanessa\\Desktop\\Java\\Dropbox\\test1.txt",
       };
-      FolderUtility util;
       
       boolean[] expectedIsValid = {
             false,
@@ -28,11 +29,14 @@ public class FolderUtilityTest
             "C:\\Users\\Vanessa\\Desktop\\Java\\Dropbox",
             "C:\\Users\\Vanessa\\Desktop\\Java\\Dropbox",
       };
+      
+      FolderUtility util = new FolderUtility("Dropbox");
+      
       for (int i=0; i<paths.length; i++) {
-         util = new FolderUtility(paths[i]);
-         System.out.println(util.toString() + " " + util.getIsValidPath());
+         util.setPath(Paths.get(paths[i]));
+//         System.out.println(util.getPath().toString() + " " + util.getIsValidPath());
          assertEquals("IsValid", expectedIsValid[i], util.getIsValidPath());
-         assertEquals("Path Strings", expectedPath[i], util.toString());
+         assertEquals("Path Strings", expectedPath[i], util.getPath().toString());
       }
    }
 }

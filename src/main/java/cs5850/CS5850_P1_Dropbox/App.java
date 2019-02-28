@@ -3,7 +3,6 @@ package cs5850.CS5850_P1_Dropbox;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.Scanner;
 
 import com.amazonaws.services.s3.AmazonS3;
@@ -13,8 +12,32 @@ public class App
 {
     public static void main( String[] args )
     {
-//       watchFolder();
-       s3client();
+       final String WATCHED_FOLDER_NAME = "Dropbox";
+       final String DROPBOX_PATH = "C:\\Users\\vanessa\\Desktop\\Java\\Dropbox";
+       
+       FolderUtility util = new FolderUtility(WATCHED_FOLDER_NAME);
+       util.setPath(Paths.get(DROPBOX_PATH));
+       
+       // Verify path to watched folder
+       if(!util.getIsValidPath()) {
+          System.out.println("Please use path to folder named Dropbox.");
+          System.exit(0);
+       }
+       
+       // Start watching folder on separate thread
+       Thread fwt = new Thread(new FolderWatcher(util.getPath()));
+       fwt.start();
+       System.out.println("Watching for changes in: " + util.getPath().toString());
+        
+       System.out.println("Press enter to stop watching folder and exit.");
+       Scanner in = new Scanner(System.in);
+       if(in.nextLine().isEmpty()) {
+          fwt.interrupt();
+       } else {
+          fwt.interrupt();
+       }
+       in.close();
+       
        System.out.println( "Program Done" );
     }
     
@@ -51,9 +74,6 @@ public class App
        s3.putFile(new File(DROPBOX_PATH + FILE3));
        s3.renameFile(FILE3, FILE4);
        s3.printList();
-//     
-//       final String DOWNLOAD_FILE = "C:\\Users\\vanessa\\Desktop\\Java\\Dropbox\\test3.txt";
-//     AwsS3Client.downloadFileFromBucket(BUCKET_NAME, DOWNLOAD_FILE);
     }
     
     public static void watchFolder() {
@@ -70,5 +90,26 @@ public class App
           fwt.interrupt();
        }
        in.close();
+    }
+    
+    public static void folderUtility() {
+       final String WATCHED_FOLDER_NAME_1 = "Dropbox";
+       
+       final String DROPBOX_PATH = "C:\\Users\\vanessa\\Desktop\\Java\\Dropbox\\";
+       
+       FolderUtility util_1 = new FolderUtility(WATCHED_FOLDER_NAME_1);
+       util_1.setPath(Paths.get(DROPBOX_PATH));
+       System.out.println("Watching path: " + util_1.getPath().toString());
+       System.out.println("Is valid? " + util_1.getIsValidPath());
+       
+       final String DROPBOX_PATH_2 = "C:\\Users\\vanessa\\Desktop\\Java\\Dropbox\\test1.txt";
+       util_1.setPath(Paths.get(DROPBOX_PATH_2));
+       System.out.println("Watching path: " + util_1.getPath().toString());
+       System.out.println("Is valid? " + util_1.getIsValidPath());
+       
+       final String DROPBOX_PATH_3 = "C:\\Users\\vanessa\\Desktop\\Java\\junk\\";
+       util_1.setPath(Paths.get(DROPBOX_PATH_3));
+       System.out.println("Watching path: " + util_1.getPath().toString());
+       System.out.println("Is valid? " + util_1.getIsValidPath());
     }
 }

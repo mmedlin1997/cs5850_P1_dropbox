@@ -6,27 +6,41 @@ import java.nio.file.Paths;
 
 public class FolderUtility
 {
-   public final String FOLDER_NAME = "Dropbox";
+   private String watchedFolderName;
    private Path path;
    private boolean isValidPath;
    
-   public FolderUtility(String path) {
-      this.path = Paths.get(path);
+   public FolderUtility(String watchedFolderName) {
+      this.watchedFolderName = watchedFolderName;
+      this.path = Paths.get("");
+      this.isValidPath = false;
+   }
+   
+   
+   public Path getPath() {
+      return path;
+   }
+
+
+   public void setPath(Path path) {
+      this.path = path;
       this.isValidPath = validatePath();
+   }
+
+   public boolean getIsValidPath() {
+      return this.isValidPath;
    }
    
    private boolean validatePath() {
       // Check if path is a folder or file
       File f = new File(this.path.toString());
       if (f.isDirectory()) {
-         System.out.println("in a directory");
-         System.out.println("folder is: " + this.path.getFileName());
-         if (FOLDER_NAME.equals(this.path.getFileName().toString())) {
+         if (this.watchedFolderName.equals(this.path.getFileName().toString())) {
             return true;
          }
       }
       else {
-         if(FOLDER_NAME.equals(this.path.getParent().getFileName().toString())) {
+         if(this.watchedFolderName.equals(this.path.getParent().getFileName().toString())) {
             this.path = this.path.getParent();
             return true;
          }
@@ -34,12 +48,4 @@ public class FolderUtility
       
       return false;
    };
-   
-   public boolean getIsValidPath() {
-      return this.isValidPath;
-   }
-   
-   public String toString() {
-      return this.path.toString();
-   }
 }
