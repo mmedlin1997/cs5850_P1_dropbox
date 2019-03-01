@@ -21,21 +21,6 @@ public class FolderWatcherTest
    public TemporaryFolder tempFolder = new TemporaryFolder();
    // Note: File is guaranteed to be deleted after the test finishes.
    
-//   @Test
-//   public void testWrite() throws IOException {
-//     
-//      // Create a new empty temporary folder, then add some files.
-//      final File testTempFolder = tempFolder.newFolder("Dropbox");
-//      final File testFile1 = new File(testTempFolder.getAbsolutePath() + "\\" + "test1.txt");
-//      FileUtils.writeStringToFile(testFile1, "hello world", StandardCharsets.UTF_8);
-//      
-//      final String s = FileUtils.readFileToString(testFile1, StandardCharsets.UTF_8);
-//      
-//      // Verify the content
-//      Assert.assertEquals("hello world", s);
-//      System.out.println(testFile1.getAbsolutePath());
-//   }
-   
    @Test
    public void test_FolderWatcher_should_handleCreateFileEvent() throws IOException, InterruptedException {
       
