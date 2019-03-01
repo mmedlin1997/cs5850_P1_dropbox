@@ -14,7 +14,6 @@ public class FolderWatcher implements Runnable
    private WatchService watchService;
    private IAwsS3Client s3;
    private Path path;
-   private WatchEvent<?> prevWatch;
    
    public FolderWatcher(Path path, IAwsS3Client s3) {
       try {
@@ -24,7 +23,6 @@ public class FolderWatcher implements Runnable
          // Set storage client
          this.s3 = s3;
          this.path = path;
-         this.prevWatch = null;
          
          // Register events
          path.register(watchService,
@@ -67,8 +65,10 @@ public class FolderWatcher implements Runnable
       }
    }
    
+   // Actions handled by events:
    // create: CREATE MODIFY
    // rename: DELETE CREATE
+   // resave: MODIFY
    // delete: DELETE
    private void handleEvent(WatchEvent<?> event) {
       Kind<?> kind = event.kind();
@@ -78,28 +78,19 @@ public class FolderWatcher implements Runnable
          // Create file in S3
          Path path = Paths.get(this.path.toString(), event.context().toString());
          this.s3.putFile(path.toFile());
-         this.prevWatch = event;
       }
       else if (kind.equals(StandardWatchEventKinds.ENTRY_DELETE)) {
          System.out.println("Deleting file: " + event.context());
          
          // Delete file in S3
          this.s3.deleteFile(event.context().toString());
-         this.prevWatch = event;
       }
       else if (kind.equals(StandardWatchEventKinds.ENTRY_MODIFY)) {
-         if (this.prevWatch != null) {
-            if (this.prevWatch.kind().equals(StandardWatchEventKinds.ENTRY_CREATE)) {
-//               System.out.println("Prev kind was: " + this.prevWatch.kind() + ". Assuming create." );
-            }
-            else {
-               System.out.println("Modifying file: " + event.context());
-               this.s3.deleteFile(event.context().toString());
-               Path path = Paths.get(this.path.toString(), event.context().toString());
-               this.s3.putFile(path.toFile());
-            }
-         }
-         this.prevWatch = event;
+         System.out.println("Modify file: " + event.context());
+         
+         // Put file to S3
+         Path path = Paths.get(this.path.toString(), event.context().toString());
+         this.s3.putFile(path.toFile());
       }
       else {
          System.out.println("Event kind:" + kind + ", file: " + event.context());
