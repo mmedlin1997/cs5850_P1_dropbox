@@ -2,7 +2,6 @@ package cs5850.CS5850_P1_Dropbox;
 
 import org.apache.commons.io.FileUtils;
 
-import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
